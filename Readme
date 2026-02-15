@@ -1,0 +1,48 @@
+# Análisis Morfosintáctico de Letras Musicales con POS Tagging
+**NLTK vs spaCy – Patrones por Género y Evolución Temporal**
+
+**Curso:** Técnicas de Minería de Textos y PLN
+**Institución:** Colegio Universitario de Cartago (CUC)
+**Integrante:** Brayton (Jhuler12311)
+**Profesor:** Osvaldo Gonzalez Chaves
+**Fecha:** Febrero 2025
+
+## Objetivo General
+Aplicar POS Tagging con NLTK y spaCy a letras de canciones para comparar sistemas de etiquetas (Penn Treebank vs Universal POS), identificar patrones morfosintácticos por género, analizar evolución temporal de complejidad gramatical y explorar correlaciones con emocionalidad (pronombres, adjetivos descriptivos, densidad léxica).
+
+## Dataset
+- Fuente: [Music Dataset: Lyrics and Metadata from 1950 to 2019](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019) (`tcc_ceds_music.csv`)
+- ~41,000 canciones originales con metadata (género, valence/sadness, danceability, etc.)
+- Muestreo: 10,000 canciones → limpieza → análisis efectivo ~5,000 letras
+- Períodos: décadas desde 1950s hasta 2010s
+- Géneros principales analizados: Rock, Pop, Hip-Hop, etc. (basado en columna 'genre')
+
+## Pipeline de Procesamiento (Reproducible)
+```bash
+# 1. Clonar y preparar entorno
+git clone https://github.com/Jhuler12311/proyecto-pos-tagging-letras.git
+cd proyecto-pos-tagging-letras
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# 2. Modelos spaCy (español + inglés por canciones mixtas)
+python -m spacy download es_core_news_sm
+python -m spacy download en_core_web_sm
+
+# 3. Ejecutar pasos secuenciales
+python src/data/loader.py       # → dataset_final.csv (muestreo + decade)
+python src/data/cleaner.py      # → dataset_limpio.csv
+python src/models/analyser.py   # → dataset_master.csv (POS, lemas, métricas)
+python src/models/comparison.py # → dataset_avanzado.csv + comparacion_etiquetas.csv
+
+# 4. Lanzar Dashboard interactivo
+python src/visualization/dashboard.py
+# Abrir: http://127.0.0.1:8050/
+
+Resultados Principales y Hallazgos
+
+Comparación NLTK vs spaCy: spaCy es significativamente más rápido (promedio ~X seg vs ~Y seg por canción). Diferencias en etiquetado: Penn Treebank más granular (ej. VBZ vs VERB), pero Universal POS más consistente para análisis multilingüe.
+Evolución temporal: Densidad léxica tiende a disminuir en décadas recientes (simplificación gramatical). Uso de pronombres personales más alto en 90s–2000s vs 2010s.
+Por género: Géneros como Pop/Baladas muestran mayor densidad de adjetivos y pronombres (emocionalidad alta); Hip-Hop más verbos de acción.
+ADN Musical: Ejemplo para artista seleccionado → lemas clave + adjetivos descriptivos (ver dashboard).
