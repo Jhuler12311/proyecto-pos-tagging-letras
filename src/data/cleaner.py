@@ -1,4 +1,4 @@
-import pandas as pd
+import csv
 import re
 import os
 
@@ -10,12 +10,11 @@ def limpiar_texto(texto):
     # 1. Convertir a minúsculas
     texto = texto.lower()
 
-    # 2. Eliminar etiquetas de estructura (ej: [Chorus], [Intro], (Verse))
+    # 2. Eliminar etiquetas de estructura
     texto = re.sub(r'\[.*?\]', '', texto)
     texto = re.sub(r'\(.*?\)', '', texto)
 
     # 3. Eliminar caracteres especiales, números y puntuación
-    # Mantenemos letras y espacios
     texto = re.sub(r'[^a-záéíóúñ\s]', '', texto)
 
     # 4. Eliminar espacios múltiples y saltos de línea
@@ -31,25 +30,35 @@ def ejecutar_limpieza():
 
     if not os.path.exists(ruta_entrada):
         raise FileNotFoundError(f"No se encontró el archivo para limpieza: {ruta_entrada}")
-        return
 
     print("LIMPIANDO")
-    df = pd.read_csv(ruta_entrada)
+    
+    # Leer el CSV usando la biblioteca estándar
+    datos = []
+    with open(ruta_entrada, 'r', encoding='utf-8') as archivo_entrada:
+        lector = csv.DictReader(archivo_entrada)
+        for fila in lector:
+            texto_limpio = limpiar_texto(fila['lyric'])
+            if texto_limpio:  # Solo incluir si no está vacío
+                fila['lyric_clean'] = texto_limpio
+                datos.append(fila)
 
-    # Aplicamos la función mágica de limpieza
-    df['lyric_clean'] = df['lyric'].apply(limpiar_texto)
-
-    # Quitamos filas que hayan quedado vacías por error
-    df = df[df['lyric_clean'] != ""]
-
-    # Guardamos el resultado
-    df.to_csv(ruta_salida, index=False)
-    print(f"FINALIZADO, GUARDADO EN: {ruta_salida}")
-    print(f"Muestra:\n{df['lyric_clean'].iloc[0][:100]}...")
+    # Guardar el resultado
+    if datos:
+        with open(ruta_salida, 'w', encoding='utf-8', newline='') as archivo_salida:
+            escritor = csv.DictWriter(archivo_salida, fieldnames=datos[0].keys())
+            escritor.writeheader()
+            escritor.writerows(datos)
+        
+        print(f"FINALIZADO, GUARDADO EN: {ruta_salida}")
+        if datos:
+            print(f"Muestra:\n{datos[0]['lyric_clean'][:100]}...")
+    else:
+        print("No se encontraron datos válidos para procesar")
 
 
 if __name__ == "__main__":
     try:
         ejecutar_limpieza()
     except Exception as e:
-        print(f" Error en cleaner.py: {e}")
+        print(f"Error en cleaner.py: {e}")
