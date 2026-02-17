@@ -1,0 +1,27 @@
+Sistemas de Etiquetado
+
+NLTK utiliza el sistema Penn Treebank, que emplea etiquetas detalladas como:
+
+NN (sustantivo singular)
+
+NNS (sustantivo plural)
+
+VB (verbo base)
+
+VBD (verbo pasado)
+
+JJ (adjetivo)
+
+PRP (pronombre personal)
+
+spaCy utiliza el sistema Universal POS, que simplifica las categorías en etiquetas más interpretables:
+
+NOUN
+
+VERB
+
+ADJ
+
+PRON
+
+ADV
