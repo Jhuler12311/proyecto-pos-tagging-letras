@@ -17,7 +17,7 @@ except:
     print("python -m spacy download en_core_web_sm")
     exit(1)
 
-# Función auxiliar para detectar idioma aproximado (simple pero efectivo para letras)
+# Función auxiliar para detectar idioma aproximado
 def detectar_idioma(texto):
     texto = str(texto).lower()
     en_words = len(re.findall(r'\b(the|you|love|i|me|my|your|it|to|in|on)\b', texto))
@@ -26,10 +26,23 @@ def detectar_idioma(texto):
         return 'en'
     elif es_words > en_words + 2:
         return 'es'
-    return 'es'  # default a español si ambiguo (tu proyecto parece tener más español)
+    return 'es'
 
-def analizar_corpus_completo():
-    # Configuración de rutas
+
+def analizar_corpus_completo(return_df: bool = False):
+    """
+    Analizador morfosintáctico principal del proyecto.
+
+    - Aplica POS Tagging (spaCy Universal POS)
+    - Extrae métricas léxicas y morfológicas
+    - Soporta corpus bilingüe (es/en)
+    - Genera dataset maestro para visualización y análisis
+
+    Parámetros
+    ----------
+    return_df : bool
+        Si True, devuelve el DataFrame analizado para uso en otros módulos
+    """
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     ruta_entrada = os.path.join(base_dir, 'data', 'processed', 'dataset_limpio.csv')
     ruta_salida = os.path.join(base_dir, 'data', 'processed', 'dataset_master.csv')
@@ -37,11 +50,9 @@ def analizar_corpus_completo():
     if not os.path.exists(ruta_entrada):
         raise FileNotFoundError(f"No se encontró dataset_limpio.csv en: {ruta_entrada}")
 
-    print("Iniciando Pipeline Unificado (Tokenización, POS, NER, Lemas)...")
+    print("Iniciando Pipeline Unificado (Tokenización, POS, Lemas)...")
     df = pd.read_csv(ruta_entrada)
 
-    # MEJORA: Conservar TODAS las columnas originales (genre, valence, sadness, etc.)
-    # No hacemos drop ni filtramos columnas innecesarias aquí
     df_muestra = df.copy()
     textos = df_muestra['lyric_clean'].astype(str).tolist()
 
@@ -50,32 +61,26 @@ def analizar_corpus_completo():
     print("Analizando estructura morfosintáctica y emocionalidad...")
 
     for idx, texto in enumerate(tqdm(textos, desc="Procesando letras")):
-        # NUEVO: detección de idioma por canción
         idioma = detectar_idioma(texto)
         nlp = nlp_en if idioma == 'en' else nlp_es
-
-        # Procesamos una por una (más seguro con detección dinámica)
         doc = nlp(texto)
 
-        # 1. NER y Lematización
-        entidades = [ent.text for ent in doc.ents]
+        # Lemas clave
         lemas_clave = [
             t.lemma_ for t in doc
             if not t.is_stop and not t.is_punct and t.pos_ in ['NOUN', 'ADJ', 'VERB']
         ]
 
-        # 2. Conteo de categorías POS (Universal POS de spaCy)
+        # Conteo POS
         v = len([t for t in doc if t.pos_ == "VERB"])
         s = len([t for t in doc if t.pos_ == "NOUN"])
         a = len([t for t in doc if t.pos_ == "ADJ"])
         p = len([t for t in doc if t.pos_ == "PRON"])
 
-        # 3. Métricas derivadas
+        # Métricas derivadas
         n_tokens = len(doc)
         densidad = (s + v + a) / n_tokens if n_tokens > 0 else 0
         ratio_sv = s / v if v > 0 else 0
-
-        # NUEVO: ratio adjetivos (útil para emocionalidad descriptiva)
         ratio_adj = a / n_tokens if n_tokens > 0 else 0
 
         resultados.append({
@@ -85,25 +90,26 @@ def analizar_corpus_completo():
             'pronombres_count': p,
             'densidad_lexica': densidad,
             'ratio_sust_verb': ratio_sv,
-            'ratio_adjetivos': ratio_adj,           # NUEVO
+            'ratio_adjetivos': ratio_adj,
             'palabras_clave': ", ".join(lemas_clave[:12]),
             'adjetivos_ejemplo': ", ".join([t.text for t in doc if t.pos_ == "ADJ"][:8]),
-            'idioma_detectado': idioma,             # NUEVO (para depuración)
-            # No agregamos entidades aquí para no saturar el csv
+            'idioma_detectado': idioma
         })
 
-    # Unificar: concatenar manteniendo TODAS las columnas originales
     df_analizado = pd.DataFrame(resultados)
     df_final = pd.concat([df_muestra.reset_index(drop=True), df_analizado], axis=1)
 
-    # Guardar
     os.makedirs(os.path.dirname(ruta_salida), exist_ok=True)
     df_final.to_csv(ruta_salida, index=False)
 
-    print(f"\nPipeline Finalizado.")
+    print("\nPipeline Finalizado.")
     print(f"Archivo maestro generado: {ruta_salida}")
     print(f"Filas procesadas: {len(df_final)}")
-    print(f"Columnas finales: {list(df_final.columns)}")  # Útil para depurar
+    print(f"Columnas finales: {list(df_final.columns)}")
+
+    if return_df:
+        return df_final
+
 
 if __name__ == "__main__":
     try:

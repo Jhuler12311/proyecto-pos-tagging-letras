@@ -1,91 +1,149 @@
-# Análisis Morfosintáctico de Letras Musicales con POS Tagging
-**NLTK vs spaCy – Patrones por Género y Evolución Temporal**
+Análisis Morfosintáctico de Letras Musicales con POS Tagging
 
-**Curso:** Técnicas de Minería de Textos y PLN
-**Institución:** Colegio Universitario de Cartago (CUC)
-**Integrante:** Brayton (Jhuler12311)
-**Profesor:** Osvaldo Gonzalez Chaves
-**Fecha:** Febrero 2025
+Comparación NLTK vs spaCy – Patrones por Género y Evolución Temporal
 
-## Objetivo General
+Curso: Técnicas de Minería de Textos y PLN
+Institución: Colegio Universitario de Cartago (CUC)
+Integrante: Brayton (Jhuler12311)
+Profesor: Osvaldo González Chaves
+Fecha: Febrero 2025
 
-Aplicar POS Tagging con NLTK y spaCy a letras de canciones para comparar sistemas de etiquetas (Penn Treebank vs Universal POS), identificar patrones morfosintácticos por género, analizar evolución temporal de complejidad gramatical y explorar correlaciones con emocionalidad (pronombres, adjetivos descriptivos, densidad léxica).
+Objetivo General
 
-## Dataset
+Aplicar técnicas de POS Tagging utilizando NLTK y spaCy sobre letras de canciones para:
 
-- Fuente: [Music Dataset: Lyrics and Metadata from 1950 to 2019](https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019) (`tcc_ceds_music.csv`)
-- ~41,000 canciones originales con metadata (género, valence/sadness/romantic, danceability, etc.)
-- Muestreo: 10,000 canciones → limpieza → análisis efectivo ~5,000 letras
-- Períodos: décadas desde 1950s hasta 2010s
-- Géneros principales analizados: Rock, Pop, Hip-Hop, Baladas, Reggaetón, entre otros (basado en columna 'genre')
+Comparar sistemas de etiquetado gramatical (Penn Treebank vs Universal POS)
 
-## Pipeline de Procesamiento (Reproducible)
+Identificar patrones morfosintácticos por género musical
 
-```bash
-# 1. Clonar y preparar entorno
+Analizar la evolución temporal de la complejidad gramatical
+
+Explorar la relación entre estructura gramatical y emocionalidad (valence, sadness, romantic)
+
+Dataset
+
+Fuente: Music Dataset: Lyrics and Metadata from 1950 to 2019 (Kaggle)
+
+Archivo original: tcc_ceds_music.csv
+
+Tamaño original: ~41,000 canciones
+
+Muestreo: 10,000 canciones → limpieza → análisis efectivo ~5,000 letras
+
+Período temporal: Décadas desde 1950s hasta 2010s
+
+Variables relevantes: género, valence, sadness, romantic, danceability, loudness, entre otras
+
+Arquitectura del Pipeline (Reproducible)
+
+El proyecto sigue una arquitectura modular y reproducible, separando claramente cada etapa del procesamiento:
+raw → limpieza → análisis lingüístico → métricas → visualización
+
+# 1. Clonar repositorio y crear entorno
 git clone https://github.com/Jhuler12311/proyecto-pos-tagging-letras.git
 cd proyecto-pos-tagging-letras
 python -m venv .venv
-# Windows:
+
+# Activar entorno
+# Windows
 .venv\Scripts\activate
-# Linux/Mac:
+# Linux / Mac
 source .venv/bin/activate
 
 # 2. Instalar dependencias
 pip install -r requirements.txt
 
-# 3. Modelos spaCy (español + inglés por canciones mixtas)
+# 3. Descargar modelos spaCy
 python -m spacy download es_core_news_sm
 python -m spacy download en_core_web_sm
 
-# 4. Ejecutar pasos secuenciales
-python src/data/loader.py       # → dataset_final.csv (muestreo + decade)
-python src/data/cleaner.py      # → dataset_limpio.csv
-python src/models/analyser.py   # → dataset_master.csv (POS, lemas, métricas)
-python src/models/comparison.py # → comparacion_etiquetas.csv + análisis NLTK vs spaCy
+# 4. Ejecutar pipeline completo
+python src/data/loader.py        # Dataset base + muestreo + décadas
+python src/data/cleaner.py       # Limpieza de letras
+python src/models/analyser.py    # POS Tagging + métricas lingüísticas
+python src/models/comparison.py  # Métricas léxicas complementarias
 
-# 5. Lanzar Dashboard interactivo
+# 5. Lanzar dashboard interactivo
 python src/visualization/dashboard.py
 # Abrir en navegador: http://127.0.0.1:8050/
-Resultados Principales y Hallazgos
-Comparación NLTK vs spaCy
-Ver notebook: comparacion_nltk_vs_spacy.ipynb
 
-spaCy es significativamente más rápido (promedio ~0.45s vs ~0.85s por canción en pruebas).
-Diferencias en etiquetado: Penn Treebank (NLTK) más granular para inglés, Universal POS (spaCy) más consistente para multilingüe.
-Conclusión: spaCy elegido para pipeline principal por velocidad y adaptabilidad a letras mixtas (es/en).
+Metodología de Análisis
+POS Tagging
+
+spaCy: Universal POS (pipeline principal)
+
+NLTK: Penn Treebank (comparación conceptual y experimental)
+
+Se utilizan métricas como:
+
+Conteo de verbos, sustantivos, adjetivos y pronombres
+
+Densidad léxica
+
+Ratio sustantivos/verbos
+
+Ratio de adjetivos
+
+Lemas y adjetivos representativos por canción
+
+El pipeline soporta corpus bilingüe (es/en) mediante detección simple de idioma por letra.
+
+Resultados Principales
+Comparación NLTK vs spaCy
+
+spaCy es significativamente más rápido en procesamiento por canción
+
+Penn Treebank (NLTK) es más granular para inglés
+
+Universal POS (spaCy) es más consistente para corpus multilingüe
+
+Decisión técnica:
+spaCy se utiliza como herramienta principal por su rendimiento y adaptabilidad a letras mixtas (español/inglés).
 
 Patrones por Género
 
-Hip-Hop destaca con mayor promedio de verbos (narrativa activa y dinámica).
-Baladas priorizan estados emocionales (menos verbos de acción, más adjetivos y pronombres).
-Pop muestra alta densidad de adjetivos positivos y pronombres de segunda persona ("you").
-Ver gráfico interactivo en dashboard: "Promedio de Verbos por Género".
+Hip-Hop: mayor promedio de verbos → narrativa activa y dinámica
+
+Baladas: mayor carga emocional → más adjetivos y pronombres
+
+Pop: alta densidad de adjetivos positivos y uso de segunda persona
+
+Estos patrones pueden explorarse de forma interactiva en el dashboard.
 
 Evolución Temporal
 
-Densidad léxica disminuye en décadas recientes (simplificación gramatical).
-Uso de pronombres personales más alto en 90s–2000s vs 2010s.
-Ver gráfico interactivo en dashboard: "Evolución [métrica]".
+Disminución de densidad léxica en décadas recientes
+
+Mayor uso de pronombres personales en los años 90s y 2000s
+
+Indicios de simplificación gramatical en música contemporánea
 
 Emocionalidad Gramatical
 
-Canciones con alta densidad de adjetivos correlacionan con mayor emocionalidad (valence/sadness).
-Mayor uso de "you" en canciones románticas.
-Ver sección ADN Gramatical en dashboard para ejemplos por artista.
+Alta densidad de adjetivos correlaciona con mayor emocionalidad
+
+Uso frecuente de “you” y pronombres en canciones románticas
+
+Visualización del ADN gramatical por artista en el dashboard
+
 proyecto-pos-tagging-letras/
 ├── data/
-│   ├── raw/                  # tcc_ceds_music.csv original
-│   └── processed/            # dataset_final.csv, dataset_limpio.csv, dataset_master.csv
+│   ├── raw/
+│   │   └── tcc_ceds_music.csv
+│   └── processed/
+│       ├── dataset_final.csv
+│       ├── dataset_limpio.csv
+│       ├── dataset_master.csv
+│       └── dataset_avanzado.csv
 ├── src/
 │   ├── data/
 │   │   ├── loader.py
 │   │   └── cleaner.py
 │   ├── models/
 │   │   ├── analyser.py
-│   │   └── comparison.py     # NLTK vs spaCy
+│   │   └── comparison.py
 │   └── visualization/
-│       └── dashboard.py      # Dashboard interactivo
+│       └── dashboard.py
 ├── notebooks/
 │   ├── notebook_analisis_genero.ipynb
 │   └── comparacion_nltk_vs_spacy.ipynb
@@ -93,19 +151,29 @@ proyecto-pos-tagging-letras/
 ├── USO_DE_IA.md
 └── README.md
 
-Requisitos
+Requisitos Técnicos
 
-Python 3.12
-Dependencias: pandas, numpy==1.26.4, spacy==3.8.11, tqdm, nltk, requests, beautifulsoup4
-Modelos spaCy: es_core_news_sm, en_core_web_sm
+Python: 3.12
+
+Librerías principales:
+pandas, numpy==1.26.4, spacy==3.8.11, nltk, tqdm, plotly, dash
+
+Modelos spaCy:
+es_core_news_sm, en_core_web_sm
 
 Conclusión
-El proyecto demuestra que la estructura morfosintáctica revela patrones distintivos por género y cambios temporales en la música. spaCy se posiciona como la herramienta más robusta para este tipo de análisis. Los hallazgos apoyan la hipótesis de simplificación gramatical en décadas recientes y mayor personalización emocional en géneros como Pop y Baladas.
-Para detalles técnicos y visualizaciones interactivas, ejecutar el dashboard.
-## Hallazgos Principales
-- Hip-Hop presenta mayor promedio de verbos (narrativa activa y dinámica).
-- Baladas priorizan estados emocionales (menos verbos de acción, más adjetivos).
-- Densidad léxica disminuye en décadas recientes (simplificación gramatical).
-- spaCy es más rápido y adaptable para corpus multilingüe (vs NLTK).
-![Dashboard - Mis Artistas](boards.png)
-![Verbos por Género](dash.png)
+
+El análisis morfosintáctico de letras musicales permite identificar patrones lingüísticos claros por género y por época.
+spaCy se posiciona como la herramienta más robusta para análisis multilingüe de letras, superando a NLTK en velocidad y consistencia.
+
+Los resultados respaldan:
+
+Simplificación gramatical en décadas recientes
+
+Mayor personalización emocional en géneros como Pop y Baladas
+
+Para una exploración completa, se recomienda ejecutar el dashboard interactivo.
+
+Evidencia Visual
+(![final1.png](src/visualization/final1.png))
+(![final2.png](src/visualization/final2.png))

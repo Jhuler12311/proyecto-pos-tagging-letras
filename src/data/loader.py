@@ -2,7 +2,19 @@ import pandas as pd
 import os
 import re
 
-def procesar_letras_proyecto():
+def procesar_letras_proyecto(return_df: bool = False):
+    """
+    Loader del proyecto.
+    - Carga el dataset crudo
+    - Limpia y normaliza columnas
+    - Extrae año y década
+    - Genera dataset base para POS Tagging
+
+    Parámetros
+    ----------
+    return_df : bool
+        Si True, devuelve el DataFrame procesado para uso en otros módulos
+    """
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
     ruta_entrada = os.path.join(base_dir, 'data', 'raw', 'tcc_ceds_music.csv')
     ruta_salida = os.path.join(base_dir, 'data', 'processed', 'dataset_final.csv')
@@ -35,7 +47,7 @@ def procesar_letras_proyecto():
         return None
 
     print(f"Columna de año detectada: {col_anio}")
-    df['year_clean'] = df[col_anio].apply(extraer_anio)  # nueva columna limpia
+    df['year_clean'] = df[col_anio].apply(extraer_anio)
     print("Años válidos después de limpieza:", df['year_clean'].notna().sum())
     print("Años únicos encontrados:", sorted(df['year_clean'].dropna().unique()))
 
@@ -53,7 +65,7 @@ def procesar_letras_proyecto():
 
     print(f"Total de canciones disponibles: {len(df)}")
 
-    # Muestra aleatoria (ya lo tienes bien)
+    # Muestreo controlado
     if len(df) > 10000:
         df_final = df.sample(n=10000, random_state=42).copy()
     else:
@@ -63,7 +75,7 @@ def procesar_letras_proyecto():
     df_final = df_final.rename(columns={
         col_artista: 'artist',
         col_letra: 'lyric',
-        col_anio: 'year_original',  # conserva original si quieres
+        col_anio: 'year_original',
         'year_clean': 'year'
     })
 
@@ -73,6 +85,10 @@ def procesar_letras_proyecto():
     print(f"Dataset completo guardado en: {ruta_salida}")
     print("\n--- Distribución Temporal (después de muestreo) ---")
     print(df_final['decade'].value_counts().sort_index())
+
+    if return_df:
+        return df_final
+
 
 if __name__ == "__main__":
     try:

@@ -1,56 +1,164 @@
-# Documentación de Uso de Inteligencia Artificial
-**Estudiante:** Jhuler12311  
-**Herramienta principal:** Gemini (Google)
+Documentación de Uso de Inteligencia Artificial
 
-## Registro de Uso de Inteligencia Artificial
+Estudiante: Brayton (Jhuler12311)
+Curso: Técnicas de Minería de Textos y PLN
+Proyecto: Análisis Morfosintáctico de Letras Musicales con POS Tagging
 
-Este documento detalla la colaboración con herramientas de IA para el desarrollo del proyecto "Análisis Morfosintáctico de Letras Musicales", siguiendo las directrices de honestidad académica del curso.
+Registro de Uso de Inteligencia Artificial
 
-### Herramientas utilizadas y tareas específicas
+Este documento detalla el uso responsable de herramientas de Inteligencia Artificial durante el desarrollo del proyecto, en concordancia con las directrices de honestidad académica del curso.
+La IA fue utilizada como asistente técnico, no como sustituto del trabajo del estudiante.
 
-1. **Unificación y optimización del pipeline de procesamiento**  
-   **Contexto:** Tenía dos scripts separados (analyser.py básico y pipeline avanzado).  
-   **Prompt usado:**  
-   "Tengo dos scripts en Python: uno con spaCy para POS tagging y métricas (densidad léxica, ratio sust/verb), y otro con NLTK para comparación. Quiero fusionarlos en un solo analyser.py que procese todo el dataset_limpio.csv y genere dataset_master.csv con columnas adicionales como 'source' para distinguir mis artistas. Incluye detección de idioma y manejo de errores."  
-   **Resultado:** La IA generó la estructura base del pipeline unificado. Modifiqué rutas, agregué columnas 'source' y 'lyric_clean', y ajusté el manejo de décadas.
+Herramientas utilizadas
 
-2. **Mejora del dashboard interactivo y ADN gramatical**  
-   **Contexto:** El dashboard inicial solo mostraba gráficos básicos sin interpretación.  
-   **Prompt usado:**  
-   "Tengo un dashboard Dash con filtros de género, artista y métrica. Quiero agregar un cuadro 'ADN Gramatical' que muestre lemas clave, adjetivos representativos y emocionalidad (valence, sadness, romantic) del artista seleccionado. También quiero un filtro 'Mis Artistas vs Corpus' usando columna 'source'."  
-   **Resultado:** La IA propuso el layout del ADN box y el callback dinámico. Ajusté estilos, agregué robustez para casos vacíos y cambié títulos a español.
+Herramienta principal: Gemini (Google)
 
-3. **Creación de sección de interpretación dinámica**  
-   **Contexto:** Quería que el dashboard no solo muestre gráficos, sino que interprete patrones (ej. verbos por género).  
-   **Prompt usado:**  
-   "En mi dashboard Dash quiero agregar un div con texto interpretativo que cambie según los filtros (género, artista, source). Ejemplo: si selecciono Hip-Hop, diga que tiene más verbos que Baladas. El texto debe ser dinámico según los datos filtrados."  
-   **Resultado:** La IA sugirió lógica condicional con if/elif. Modifiqué los textos para que sean más académicos y agregué valores dinámicos (e.g., promedio real de verbos).
+Uso secundario: Asistencia puntual para depuración y estructuración de código
 
-4. **Corrección de errores de venv y dependencias**  
-   **Contexto:** Tenía errores constantes de NumPy (randbits) y spaCy no cargaba.  
-   **Prompt usado:**  
-   "Me sale ImportError: cannot import name randbits al importar spaCy en Windows con Python 3.12. ¿Cómo arreglo el venv sin perder mi proyecto?"  
-   **Resultado:** La IA recomendó bajar NumPy a 1.26.4 y recrear venv. Lo implementé manualmente en PyCharm.
+Descripción del Uso de IA por Etapas
+1. Unificación y optimización del pipeline de procesamiento
 
-5. **Estructuración de USO_DE_IA.md**  
-   **Contexto:** Necesitaba redactar este documento.  
-   **Prompt usado:**  
-   "Ayúdame a redactar USO_DE_IA.md para mi proyecto de POS tagging. Debo mencionar herramientas, prompts, reflexión y modificaciones hechas al código generado por IA."  
-   **Resultado:** La IA dio estructura base. Modifiqué ejemplos de prompts, agregué reflexión personal y ajusté lenguaje a académico.
+Contexto:
+El proyecto contaba inicialmente con dos scripts separados:
 
-### Reflexión sobre el aprendizaje
+un análisis básico con spaCy (POS tagging y métricas léxicas)
 
-El uso de IA en este proyecto no sustituyó mi trabajo, sino que actuó como un asistente técnico avanzado. Me permitió resolver problemas complejos (compatibilidad NumPy, fusión de scripts, lógica dinámica en Dash) en mucho menos tiempo, lo que me dejó espacio para enfocarme en lo más importante: interpretar los patrones morfosintácticos, comparar NLTK vs spaCy y redactar conclusiones académicas. Aprendí que la IA es una herramienta poderosa cuando se combina con comprensión humana (modifiqué casi todo el código generado para adaptarlo a mis rutas, columnas y objetivos). También entendí mejor las limitaciones técnicas (e.g., bugs de dependencias en Windows) y cómo depurarlas. En resumen, la IA aceleró el desarrollo, pero el aprendizaje real vino de validar, ajustar y contextualizar sus sugerencias.
+un pipeline adicional con métricas comparativas
 
-### Modificaciones realizadas al código generado por IA
+Prompt utilizado:
 
-- Cambié rutas absolutas por os.path.abspath para portabilidad.
-- Agregué manejo de columnas faltantes (e.g., 'source', 'lyric_clean').
-- Ajusté títulos y etiquetas a español para consistencia.
-- Incluí try-except en callbacks del dashboard para evitar crashes.
-- Modifiqué textos interpretativos para que sean académicos y no genéricos.
-- Vi que el uso de la IA puede ser beneficiosa si se usa bien.
+“Tengo dos scripts en Python: uno con spaCy para POS tagging y métricas (densidad léxica, ratio sust/verb), y otro con NLTK para comparación. Quiero fusionarlos en un solo analyser.py que procese dataset_limpio.csv y genere dataset_master.csv. Incluye detección de idioma y manejo de errores.”
 
+Resultado y modificaciones propias:
+
+La IA propuso una estructura base del pipeline unificado.
+
+Se modificaron manualmente:
+
+rutas de archivos
+
+nombres de columnas
+
+lógica de décadas
+
+integración con el dataset real del proyecto
+
+El resultado final fue adaptado completamente a la estructura del repositorio.
+
+2. Mejora del dashboard interactivo y creación del “ADN Gramatical”
+
+Contexto:
+El dashboard inicial solo mostraba gráficos descriptivos, sin interpretación lingüística.
+
+Prompt utilizado:
+
+“Tengo un dashboard Dash con filtros de género, artista y métrica. Quiero agregar un cuadro ‘ADN Gramatical’ que muestre lemas clave, adjetivos representativos y emocionalidad (valence, sadness, romantic). También quiero un filtro ‘Mis Artistas vs Corpus’.”
+
+Resultado y modificaciones propias:
+
+La IA sugirió la idea del cuadro ADN y la estructura del callback.
+
+El estudiante:
+
+ajustó los estilos visuales
+
+tradujo y reformuló textos al español académico
+
+agregó validaciones para casos sin datos
+
+adaptó la lógica a las columnas reales del dataset
+
+3. Creación de interpretación dinámica en el dashboard
+
+Contexto:
+Se buscaba que el dashboard no solo mostrara datos, sino que interpretara patrones lingüísticos.
+
+Prompt utilizado:
+
+“Quiero agregar texto interpretativo dinámico en Dash que cambie según género, artista y source. Ejemplo: si selecciono Hip-Hop, indicar que usa más verbos que Baladas.”
+
+Resultado y modificaciones propias:
+
+La IA sugirió lógica condicional básica.
+
+El estudiante:
+
+reformuló los textos para que fueran académicos
+
+incorporó valores reales calculados (promedios, comparaciones)
+
+evitó textos genéricos o fijos
+
+4. Resolución de errores técnicos (entorno y dependencias)
+
+Contexto:
+Problemas de compatibilidad entre spaCy, NumPy y Python 3.12 en Windows.
+
+Prompt utilizado:
+
+“Me aparece ImportError: cannot import name randbits al usar spaCy en Windows con Python 3.12. ¿Cómo solucionarlo sin perder el proyecto?”
+
+Resultado y aplicación:
+
+La IA recomendó fijar NumPy en la versión 1.26.4 y recrear el entorno virtual.
+
+El estudiante ejecutó manualmente los pasos y documentó la solución en requirements.txt.
+
+5. Redacción de documentación (README y USO_DE_IA)
+
+Contexto:
+Se requería documentar correctamente el uso de IA en el proyecto.
+
+Prompt utilizado:
+
+“Ayúdame a redactar USO_DE_IA.md para un proyecto de POS tagging. Debo mencionar herramientas, prompts, reflexión y modificaciones realizadas.”
+
+Resultado y modificaciones propias:
+
+La IA proporcionó una estructura base.
+
+El estudiante:
+
+ajustó el lenguaje a un tono académico
+
+personalizó los ejemplos
+
+añadió reflexión crítica y honesta
+
+Reflexión sobre el Aprendizaje
+
+El uso de Inteligencia Artificial en este proyecto no reemplazó el aprendizaje, sino que lo potenció.
+La IA permitió resolver problemas técnicos complejos (compatibilidad de librerías, estructuración de pipelines, lógica en Dash) de forma más eficiente, lo que permitió dedicar más tiempo a:
+
+analizar resultados lingüísticos
+
+comparar enfoques entre NLTK y spaCy
+
+interpretar patrones por género y evolución temporal
+
+La mayor parte del código generado por IA fue modificado, adaptado y validado manualmente, lo que fortaleció la comprensión del proyecto.
+Además, se aprendió que un uso incorrecto de IA (prompts vagos o copia directa) puede generar más errores que soluciones.
+
+Modificaciones realizadas al código sugerido por IA
+
+Reemplazo de rutas absolutas por os.path.abspath para portabilidad
+
+Manejo de columnas faltantes (source, lyric_clean)
+
+Ajuste de nombres y textos al español académico
+
+Inclusión de manejo de errores (try-except) en callbacks
+
+Validación de datos antes de visualización
+
+Reformulación de interpretaciones automáticas
+
+Conclusión
+
+La Inteligencia Artificial fue utilizada como una herramienta de apoyo, no como sustituto del trabajo académico.
+El aprendizaje real se produjo al evaluar, corregir y contextualizar las sugerencias de la IA dentro de los objetivos del curso.
+
+Un uso consciente y crítico de la IA puede mejorar significativamente la calidad y eficiencia del desarrollo, siempre que exista comprensión técnica por parte del estudiante.
 Para concluir, si bien la IA es un buen asistente, se requiere un estudio previo para poder usarla como se debe.
 Ya que si haces un mal pront de lo que quieres o simplemente copias y pegas pues la IA no te ayudara y generaras mas errores 
 de los que puedas imaginar.
