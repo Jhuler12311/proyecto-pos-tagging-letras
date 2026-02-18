@@ -51,4 +51,6 @@ El uso de IA en este proyecto no sustituyó mi trabajo, sino que actuó como un 
 - Modifiqué textos interpretativos para que sean académicos y no genéricos.
 - Vi que el uso de la IA puede ser beneficiosa si se usa bien.
 
-Con esto, el documento es completo, honesto y cumple con los requisitos de la rúbrica (uso documentado, reflexión, ejemplos de prompts, modificaciones).
+Para concluir, si bien la IA es un buen asistente, se requiere un estudio previo para poder usarla como se debe.
+Ya que si haces un mal pront de lo que quieres o simplemente copias y pegas pues la IA no te ayudara y generaras mas errores 
+de los que puedas imaginar.
