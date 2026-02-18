@@ -3,7 +3,7 @@ import os
 import time
 import csv
 import re
-from secrets import GENIUS_TOKEN
+from my_secrets import GENIUS_TOKEN
 from bs4 import BeautifulSoup
 
 
