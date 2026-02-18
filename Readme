@@ -102,3 +102,10 @@ Modelos spaCy: es_core_news_sm, en_core_web_sm
 Conclusión
 El proyecto demuestra que la estructura morfosintáctica revela patrones distintivos por género y cambios temporales en la música. spaCy se posiciona como la herramienta más robusta para este tipo de análisis. Los hallazgos apoyan la hipótesis de simplificación gramatical en décadas recientes y mayor personalización emocional en géneros como Pop y Baladas.
 Para detalles técnicos y visualizaciones interactivas, ejecutar el dashboard.
+## Hallazgos Principales
+- Hip-Hop presenta mayor promedio de verbos (narrativa activa y dinámica).
+- Baladas priorizan estados emocionales (menos verbos de acción, más adjetivos).
+- Densidad léxica disminuye en décadas recientes (simplificación gramatical).
+- spaCy es más rápido y adaptable para corpus multilingüe (vs NLTK).
+![Dashboard - Mis Artistas](boards.png)
+![Verbos por Género](dash.png)
