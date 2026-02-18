@@ -1,8 +1,6 @@
-import csv
+import pandas as pd
 import os
 import re
-import random
-from collections import defaultdict
 
 def procesar_letras_proyecto():
     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -13,32 +11,37 @@ def procesar_letras_proyecto():
         raise FileNotFoundError(f"No se encontró el archivo de entrada: {ruta_entrada}")
 
     print("CARGANDO DATASET ORIGINAL...")
-    
-    # Leer CSV manualmente
-    datos = []
-    encabezados = []
-    with open(ruta_entrada, 'r', encoding='utf-8') as file:
-        reader = csv.reader(file)
-        encabezados = [c.lower() for c in next(reader)]  # Normalizar columnas a minúsculas
-        datos = list(reader)
+    df = pd.read_csv(ruta_entrada)
 
-    # Detectar nombres correctos de columnas
-    col_artista = encabezados.index('artist_name' if 'artist_name' in encabezados else 'artist')
-    col_letra = encabezados.index('lyrics' if 'lyrics' in encabezados else 'lyric')
-    col_anio = encabezados.index('release_date' if 'release_date' in encabezados else 'year')
+    # Normalizar columnas a minúsculas
+    df.columns = [c.lower() for c in df.columns]
 
+    # Detectar nombres correctos
+    col_artista = 'artist_name' if 'artist_name' in df.columns else 'artist'
+    col_letra = 'lyrics' if 'lyrics' in df.columns else 'lyric'
+    col_anio = 'release_date' if 'release_date' in df.columns else 'year'
+
+    # Función robusta para extraer año
     def extraer_anio(valor):
         try:
             if isinstance(valor, str):
                 match = re.search(r'\b(19\d{2}|20\d{2})\b', valor)
                 if match:
                     return int(match.group(0))
-            return int(float(valor)) if valor else None
+            if pd.notna(valor):
+                return int(float(valor))
         except:
-            return None
+            pass
+        return None
 
+    print(f"Columna de año detectada: {col_anio}")
+    df['year_clean'] = df[col_anio].apply(extraer_anio)  # nueva columna limpia
+    print("Años válidos después de limpieza:", df['year_clean'].notna().sum())
+    print("Años únicos encontrados:", sorted(df['year_clean'].dropna().unique()))
+
+    # Crear década
     def obtener_decada(year):
-        if not year:
+        if pd.isna(year):
             return "Unknown"
         try:
             y = int(year)
@@ -46,47 +49,30 @@ def procesar_letras_proyecto():
         except:
             return "Unknown"
 
-    # Procesar datos
-    datos_procesados = []
-    for fila in datos:
-        year_clean = extraer_anio(fila[col_anio])
-        decade = obtener_decada(year_clean)
-        
-        datos_procesados.append({
-            'artist': fila[col_artista],
-            'lyric': fila[col_letra],
-            'year_original': fila[col_anio],
-            'year': year_clean,
-            'decade': decade
-        })
+    df['decade'] = df['year_clean'].apply(obtener_decada)
 
-    print(f"Total de canciones disponibles: {len(datos_procesados)}")
+    print(f"Total de canciones disponibles: {len(df)}")
 
-    # Muestra aleatoria
-    if len(datos_procesados) > 10000:
-        df_final = random.sample(datos_procesados, 10000)
+    # Muestra aleatoria (ya lo tienes bien)
+    if len(df) > 10000:
+        df_final = df.sample(n=10000, random_state=42).copy()
     else:
-        df_final = datos_procesados
+        df_final = df.copy()
 
-    print(f"Total de canciones en la muestra final: {len(df_final)}")
+    # Renombrar columnas clave
+    df_final = df_final.rename(columns={
+        col_artista: 'artist',
+        col_letra: 'lyric',
+        col_anio: 'year_original',  # conserva original si quieres
+        'year_clean': 'year'
+    })
 
-    # Guardar el dataset final en formato CSV
-    with open(ruta_salida, 'w', encoding='utf-8', newline='') as file:
-        columnas = ['artist', 'lyric', 'year_original', 'year', 'decade']
-        writer = csv.DictWriter(file, fieldnames=columnas)
-        writer.writeheader()
-        writer.writerows(df_final)
+    os.makedirs(os.path.dirname(ruta_salida), exist_ok=True)
+    df_final.to_csv(ruta_salida, index=False)
 
     print(f"Dataset completo guardado en: {ruta_salida}")
-
-    # Calcular y mostrar la distribución temporal
-    distribucion_temporal = defaultdict(int)
-    for row in df_final:
-        distribucion_temporal[row['decade']] += 1
-
     print("\n--- Distribución Temporal (después de muestreo) ---")
-    for decada in sorted(distribucion_temporal.keys()):
-        print(f"{decada}: {distribucion_temporal[decada]}")
+    print(df_final['decade'].value_counts().sort_index())
 
 if __name__ == "__main__":
     try:
